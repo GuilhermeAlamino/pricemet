@@ -1,92 +1,100 @@
-# Introdução do projeto Back-end Desenvolvimento Laravel
+# YETZCARDS
 
-Este projeto possui 3 entidades(funcionarios,departamentos,tarefas) e para cada entidade suporta operações de (criar, ler, atualizar e excluir).
+## Recursos Desenvolvidos:
 
-A Aplicação contém Autenticação padrão do Laravel, a onde somente usuario que estão no banco de dados na tabela users conseguem acessar e suporta operações de (criar, ler, atualizar e excluir).
+* Criei um translation para associar tradução com os niveis de cada jogador. 
 
-A Aplicação também possui E-mail de Verificação o botão pra essa ação está na tela de *Gerenciar Usúarios* e utilizei o Notifications pra disparar a notificação e usei o service (Mailtrap) vocÊ pode utilizar outros serviços pra testar (se quiser).
+| Nivel  | Descrição        |
+| -------| -----------------|
+| 1      | Iniciante        |
+| 2      | Intermediário    |
+| 3      | Avançado         |
+| 4      | Expert           |
+| 5      | Veterano         | 
 
-exemplo: 
+## Criação de jogadores podera ocorrer em massa dependendo da configuração de limite por jogador nas *Configurações do Sorteio*:
+
+*Configurações do Sorteio*
+
+* Opção de Balancear o Jogo.
+
+* Opção alterar limite de jogadores por time.
+
+| Validações  | Configuração              | Descrição
+| ------------| --------------------------|--------------
+| 1           | Limite por time (Menu)    | Deve existir algum limite diferente de 0 nas configurações
+| 6           | Balancear (Menu)          | Você consegue balancear os times no sorteio
+| 2           | Confirmação por jogador   | Deve existir confirmado os jogadores para cada time pra ocorrer o sorteio 
+| 3           | Time completo             | Deve existir pelo menos 2 times completos pra sortear
+| 4           | Goleiros                  | Deve existir pelo menos 2 goleiros nos times
+| 5           | Goleiros Para Cada Time   | Deve existir pelo menos 2 goleiros para cada time
+| 7           | Repetição                 | Não Deve existir goleiros ou jogadores repetidos no mesmo time
+
+## Notificação por E-mail pra cada Usúario Admin criado:
+
+Pra teste utilizei o *Mailtrap* :
+
 ```dosini
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.example.io
-MAIL_PORT=2525
-MAIL_USERNAME=exampleUser
-MAIL_PASSWORD=examplePassword
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=example@example.com
-MAIL_FROM_NAME="${APP_NAME}"
+https://mailtrap.io/register/signup?ref=header
 ```
 
-A Aplicação contém relação da entidade funcionarios com departamentos, e tarefas com funcionarios pra isso ocorrer de forma otimizada e com melhor desempenho utilizei o Eager Loading nas Models (task,employee) (ORM).
+## Adicione o nome do banco DB_DATABASE .env
 
-A Aplicação contém tratamento de erros e campos obrigatório de cada entidade, e também do usúario.
-
-Existe a relação entre as tabelas, entretanto não é obrigatório que o relacionamento seja obrigatório na hora da criação de alguma entidade.
-
-- Entidade funcionário:
-* id: Número inteiro auto-incrementado
-* firstName: String, obrigatório
-* lastName: String, obrigatório
-* email: String, obrigatório, deve ser único
-* phone: String, opcional
-* department_id: Chave estrangeira, relacionada ao modelo Departamento
-
-- Departamento:
-* id: Número inteiro auto-incrementado
-* name: String, obrigatório
-
-- Tarefa:
-* id: Número inteiro auto-incrementado
-* title: String, obrigatório
-* description: String, opcional
-* assignee_id: Chave estrangeira, relacionada ao modelo Funcionário
-* due_date: DateTime, opcional
-
-Criei uma Middleware simples pra verificar se o usúario adm fez logout | login, sendo assim é possivel implementar na middleware um ACL futuramente.
-
-Implementei paginação com o proprio recurso do Laravel em todas as views que existem all.
-
-Implementei teste com PHPUnit pra validar as 3 entidades nos métodos de (create,read,update,delete) e também nas chamadas e navegação das paginas após o Login, optei por deixar padrão os nomes dos testes pra cada entidade.
-
-exemplo:
-
-`php artisan test --filter UserControllerTest::testLogin` - estou acessando a pasta tests/Feature pra testar recursividade do sistema e entro na entidade do teste que eu quero testar e passo o método, acaso queira testar por controller só retirar o método.
- 
-# Introdução para executar o projeto
-
-### 1) Clone o projeto
-`git clone https://github.com/GuilhermeAlamino/pricemet.git`
-
-### 2) Navegue até o diretório
-`cd pricemet`
-
-### 3) Instale os pacotes e dependências
-`Composer install ou Composer update`
-
-### 4) Crie seu Banco de dados e Atualize `*(.env)*` laravel, vai existir o `*.env.example*` crie um arquivo `*(.env)*` portanto não esqueça de criar um banco de dados e deixar o mesmo nessa variável `*DB_DATABASE*`
-
-exemplo:
 ```dosini
-DB_DATABASE=company_management
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=yetzcards
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 5) Gere a key do laravel
+## Próximos Passos (Melhorias) -> Infraestrutura
+
+- Utilizar RDS para instânciar o Banco de dados.
+
+- Utilizar grupo de segurança para VPC.
+
+## Próximos Passos (Melhorias/Futuras) -> Código
+
+- Policy -> pra gerenciar permissões a outros usúarios
+
+- Desacoplar o SorteioService em Camadas, tornando mais (Modular,Escalável).
+
+###  Requisitos / Frameworks
+
+- PHP ^8.1
+- Laravel ^10.10
+- Composer
+- NVM
+
+### Padrões Solid (SRP/ISP)
+
+- Controllers/Sortear -> Injeção de depêndencia / SRP
+- Controllers/Player -> Injeção de depêndencia / Service Layer
+- Services/AuthenticationService -> Single Responsiblity Principle
+- Requests -> Single Responsibility Principle, Interface Segregation Principle
+
+## Instale os pacotes e dependências
+
+`composer install`
+
+## Instale os pacotes e dependências
+
+`npm install`
+
+## Compílar os assets
+
+`npm run dev`
+
+## Gerar key da aplicação
+
 `php artisan key:generate`
 
-### 6) Rode as migrações do Banco de dados
-`php artisan migrate`
+## Rodar migrações do banco (ORM)
 
-### 7) Rode as seeds pra popular o banco com dados pra facilitar o teste.
-`php artisan db:seed`
+`php artisan migrate --seed`
 
-### 8) Execute a o projeto Laravel com o seguinte comando, optei por rodar na porta 8001.
+## Rodar o projeto
+
 `php artisan serve --port=8001`
-
-### 9) Está é URL que está rodando a aplicação acesse:
-`http://127.0.0.1:8001 ou http://localhost:8001/`
-
-### Observações:
-`O acesso para os usuários do sistema serão o e-mail da tabela users e a senha: password no faker`
